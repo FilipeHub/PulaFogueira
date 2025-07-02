@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULA FOGUEIRA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div id="background"></div>
+        <div id="score">0</div>
+        <div id="high-score">MAIOR: 0</div>
+        <div id="game-over" class="hidden">SE LASCOU!</div>  
+        <div id="ground"></div>
+        <div id="dino"></div>
+        <div id="cactus" class="hidden"></div>
+    </div>
+    <div class="instructions">
+        <p style="font-weight: bold;">Pressione ESPAÇO ou SETA PARA CIMA para pular</p>
+        <p>.</p>
+        <button id="restart-button" hidden>Reiniciar</button>
+        <p>Feito por Filipe, Mateus e Rafael</p>
+    </div>
+    <audio id="game-music" loop>
+        <source src="audios/pula-fogueira.m4a" type="audio/mp4">
+    </audio>
+    <script src="script.js"></script>
+</body>
+</html>
