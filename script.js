@@ -1,146 +1,193 @@
-// http://api:5000/chatbot/webhook/
-
 document.addEventListener('DOMContentLoaded', () => {
-    const gameMusic = document.getElementById('game-music');
-    const dino = document.getElementById('dino');
-    const cactus = document.getElementById('cactus');
-    const scoreDisplay = document.getElementById('score');
+    const gameMusic        = document.getElementById('game-music');
+    const dino             = document.getElementById('dino');
+    const cactus           = document.getElementById('cactus');
+    const scoreDisplay     = document.getElementById('score');
     const highScoreDisplay = document.getElementById('high-score');
-    const gameOverDisplay = document.getElementById('game-over');
-    const restartButton = document.getElementById('restart-button');
-    
-    let isJumping = false;
-    let isGameOver = false;
-    let score = 0;
-    let highScore = 0;
+    const gameOverDisplay  = document.getElementById('game-over');
+    const restartButton    = document.getElementById('restart-button');
+    const gameContainer    = document.querySelector('.game-container');
+
+    let isJumping   = false;
+    let isGameOver  = false;
+    let score       = 0;
+    let highScore   = 0;
     let animationId;
     let scoreInterval;
     let gameStarted = false;
-    
+
     gameMusic.volume = 0.5;
-    
-    // Função para iniciar o jogo
+
+    // -------------------------------------------------------
+    // Helper: live pixel dimensions of the container.
+    // All collision math uses these — never hardcoded 800/350.
+    // -------------------------------------------------------
+    function containerSize() {
+        return {
+            w: gameContainer.offsetWidth,
+            h: gameContainer.offsetHeight,
+        };
+    }
+
+    // -------------------------------------------------------
+    // Iniciar / Reiniciar
+    // -------------------------------------------------------
     function startGame() {
-        if (!gameStarted) {
-            gameStarted = true;
-            document.addEventListener('keydown', () => {
-                gameMusic.play();
-            }, { once: true });
-        } else {
-            gameMusic.play();
-        }
+        gameStarted = true;
+
+        // Mobile autoplay policy: play() returns a Promise
+        gameMusic.play().catch(() => { /* silently ignore */ });
 
         isGameOver = false;
-        score = 0;
+        score      = 0;
         scoreDisplay.textContent = score;
         gameOverDisplay.classList.add('hidden');
+        restartButton.hidden = true;
+
         cactus.classList.remove('hidden');
-        cactus.style.right = '-50px';
-        
-        // Reset background animation
-        document.querySelector('.game-container').style.animation = 'moveBackground 60s linear infinite';
-        
-        // Iniciar a contagem de pontos
+        cactus.style.right = '-6.25%';  // off-screen (mirrors CSS default)
+
+        // Reiniciar animação do fundo
+        gameContainer.style.animation = 'moveBackground 60s linear infinite';
+
+        // Contagem de pontos
         scoreInterval = setInterval(() => {
             if (!isGameOver) {
                 score++;
                 scoreDisplay.textContent = score;
             }
         }, 100);
-        
-        // Iniciar a animação do jogo
+
         animateGame();
     }
-    
-    
-    // Função para animar o jogo
+
+    // -------------------------------------------------------
+    // Loop do jogo
+    // -------------------------------------------------------
     function animateGame() {
         if (isGameOver) return;
-        
-        // Mover o cacto
-        let cactusPosition = parseInt(window.getComputedStyle(cactus).getPropertyValue('right'));
-        
-        // Se o cacto sair da tela, reposicioná-lo
-        if (cactusPosition > 800) {
-            cactusPosition = -50;
-            // Velocidade aleatória para o cacto
-            const speed = Math.random() * 2 + 3; // Velocidade entre 3 e 5
-            cactus.style.animationDuration = `${speed}s`;
+
+        const { w, h } = containerSize();
+
+        // Posição atual do cacto em pixels (propriedade `right`)
+        let cactusRight = parseFloat(window.getComputedStyle(cactus).getPropertyValue('right'));
+
+        // Reposicionar quando sair pela esquerda
+        if (cactusRight > w) {
+            cactusRight = -(w * 0.0625); // -6.25 % da largura
         }
-        
-        cactus.style.right = `${cactusPosition + 5}px`;
-        
-        // Verificar colisão
-        const dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue('bottom'));
-        const dinoLeft = parseInt(window.getComputedStyle(dino).getPropertyValue('left'));
-        const dinoRight = dinoLeft + 60; // Largura do dino
-        
-        const cactusLeft = 800 - cactusPosition - 30; // Posição esquerda do cacto
-        const cactusRight = cactusLeft + 30; // Largura do cacto
-        
-        // Colisão: quando o dino está próximo do cacto e não está pulando alto o suficiente
-        // Ajustado para considerar o pulo mais alto
+
+        // Velocidade proporcional ao container (≈ 5 px a 800 px)
+        const speed = w * 0.00625;
+        cactus.style.right = `${cactusRight + speed}px`;
+
+        // ---- Detecção de colisão (todos os valores em px) ----
+        const groundH    = h * 0.0571;          // 5.71 % = 20 / 350
+        const dinoW      = w * 0.075;           // 7.5 %  = 60 / 800
+        const dinoLeft   = w * 0.0625;          // 6.25 % = 50 / 800
+        const dinoRight  = dinoLeft + dinoW;
+        const dinoBottom = parseFloat(window.getComputedStyle(dino).getPropertyValue('bottom'));
+
+        const cactusW     = w * 0.0375;         // 3.75 % = 30 / 800
+        const cactusLeft  = w - cactusRight - cactusW;
+        const cactusRight2 = cactusLeft + cactusW;
+        const cactusH     = cactusW;            // fogo é aprox. quadrado
+
         if (
-            dinoRight > cactusLeft && 
-            dinoLeft < cactusRight && 
-            dinoTop < 80 // Altura do cacto
+            dinoRight  > cactusLeft  &&
+            dinoLeft   < cactusRight2 &&
+            dinoBottom < groundH + cactusH
         ) {
             gameOver();
             return;
         }
-        
+
         animationId = requestAnimationFrame(animateGame);
     }
-    
-    // Função para fazer o dinossauro pular
+
+    // -------------------------------------------------------
+    // Pulo
+    // -------------------------------------------------------
     function jump() {
         if (isJumping || isGameOver) return;
-        
+
         isJumping = true;
         dino.classList.add('jumping');
-        
-        // Remover a classe após a animação terminar
-        // Aumentado de 500ms para 700ms para corresponder à duração da animação
+
         setTimeout(() => {
             dino.classList.remove('jumping');
             isJumping = false;
         }, 700);
     }
-    
-    // Função para encerrar o jogo
+
+    // -------------------------------------------------------
+    // Game Over
+    // -------------------------------------------------------
     function gameOver() {
         isGameOver = true;
         clearInterval(scoreInterval);
         cancelAnimationFrame(animationId);
-        
-        // Parar a música
+
         gameMusic.pause();
         gameMusic.currentTime = 0;
-        
-        // Stop background animation
-        document.querySelector('.game-container').style.animation = 'stopBackground 60s linear infinite';
-        
-        // Atualizar o high score
+
+        // Parar animação do fundo
+        gameContainer.style.animation = 'stopBackground 60s linear infinite';
+
+        // Atualizar recorde
         if (score > highScore) {
             highScore = score;
             highScoreDisplay.textContent = `MAIOR: ${highScore}`;
         }
-        
+
         gameOverDisplay.classList.remove('hidden');
+        restartButton.hidden = false;
     }
-    
-    
-    // Event listeners
+
+    // -------------------------------------------------------
+    // Entrada — Teclado
+    // -------------------------------------------------------
     document.addEventListener('keydown', (event) => {
-        if ((event.code === 'Space' || event.code === 'ArrowUp') && !isGameOver) {
-            jump();
-        } else if ((event.code === 'Space' || event.code === 'ArrowUp') && isGameOver) {
-            startGame();
+        if (event.code === 'Space' || event.code === 'ArrowUp') {
+            event.preventDefault(); // impede scroll da página
+            if (!isGameOver) {
+                jump();
+            } else {
+                startGame();
+            }
         }
     });
-    
-    restartButton.addEventListener('click', startGame);
-    
-    // Iniciar o jogo
+
+    // -------------------------------------------------------
+    // Entrada — Toque / Tap (celular e tablet)
+    // -------------------------------------------------------
+    function handleTap(e) {
+        if (e.target === restartButton) return; // botão cuida de si mesmo
+
+        e.preventDefault();
+
+        if (!isGameOver) {
+            jump();
+        } else {
+            startGame();
+        }
+    }
+
+    // touchstart: resposta imediata, sem delay de 300 ms
+    gameContainer.addEventListener('touchstart', handleTap, { passive: false });
+    // click: fallback para desktop
+    gameContainer.addEventListener('click', handleTap);
+
+    // -------------------------------------------------------
+    // Botão Reiniciar
+    // -------------------------------------------------------
+    restartButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // evita acionar o click do container
+        startGame();
+    });
+
+    // -------------------------------------------------------
+    // Início
+    // -------------------------------------------------------
     startGame();
 });
