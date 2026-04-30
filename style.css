@@ -38,19 +38,29 @@ body {
     background-size: cover;
     background-repeat: repeat-x;
     background-position: 0 0;
-    animation: moveBackground 60s linear infinite;
+    animation: moveBackground 8s linear infinite;
     cursor: pointer;
 }
 
 /* ---------- Background animations ---------- */
 @keyframes moveBackground {
-    from { background-position: 0 0; }
-    to   { background-position: -10000px 0; }
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -10000px 0;
+    }
 }
 
 @keyframes stopBackground {
-    from { background-position: 0 0; }
-    to   { background-position: 0 0; }
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 0;
+    }
 }
 
 /* ---------- Ground ----------
@@ -63,18 +73,44 @@ body {
     background-color: #535353;
 }
 
-/* ---------- Character (Pedro) ----------
-   60 × 60 px at 800 × 350 → 7.5 % wide, 17.14 % tall */
+/* ---------- Character (Pedro) — Sprite Sheet ----------
+   Sprite sheet: 2064 × 512 px, 4 frames (each 516 × 512 px).
+   The element shows ONE frame at a time.
+   background-size: 400% → the full sheet spans 4× the element width,
+   so each 25% step reveals exactly one frame.
+   steps(4) snaps positions — no interpolation between frames. */
 #dino {
     position: absolute;
-    bottom: 5.71%;          /* sits on top of ground */
-    left: 6.25%;            /* 50 / 800 */
-    width: 7.5%;            /* 60 / 800 */
-    height: 17.14%;         /* 60 / 350 */
-    background-image: url('images/pedro-semfundo.png');
-    background-size: contain;
+    bottom: 5.71%;
+    /* sits on top of ground */
+    left: 6.25%;
+    /* 50 / 800 */
+    width: 7.5%;
+    /* 60 / 800 */
+    height: 17.14%;
+    /* 60 / 350 */
+    background-image: url('images/pedro-spritesheet.png');
+    background-size: 400% auto;
     background-repeat: no-repeat;
-    background-position: bottom center;
+    background-position: 0% bottom;
+    animation: run-cycle 0.4s steps(4) infinite;
+}
+
+/* Pause sprite cycling during jump so the frame stays clean */
+#dino.jumping {
+    animation:
+        run-cycle 0.4s steps(4) infinite paused,
+        jump 0.7s ease-in-out;
+}
+
+@keyframes run-cycle {
+    from {
+        background-position: 0% bottom;
+    }
+
+    to {
+        background-position: 100% bottom;
+    }
 }
 
 /* ---------- Obstacle (fire / cactus) ----------
@@ -82,9 +118,12 @@ body {
 #cactus {
     position: absolute;
     bottom: 5.71%;
-    right: -6.25%;          /* off-screen to the right */
-    width: 3.75%;           /* 30 / 800 */
-    height: 8.57%;          /* 30 / 350 */
+    right: -6.25%;
+    /* off-screen to the right */
+    width: 3.75%;
+    /* 30 / 800 */
+    height: 8.57%;
+    /* 30 / 350 */
     background-image: url('images/fogo-semfundo.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -94,8 +133,10 @@ body {
 /* ---------- Score ---------- */
 #score {
     position: absolute;
-    top: 2.86%;             /* 10 / 350 */
-    right: 2.5%;            /* 20 / 800 */
+    top: 2.86%;
+    /* 10 / 350 */
+    right: 2.5%;
+    /* 20 / 800 */
     font-size: clamp(12px, 2.5vw, 20px);
     font-weight: bold;
     color: #dc2626;
@@ -106,7 +147,8 @@ body {
 #high-score {
     position: absolute;
     top: 2.86%;
-    right: 13%;             /* ~100 px away from score */
+    right: 13%;
+    /* ~100 px away from score */
     font-size: clamp(12px, 2.5vw, 20px);
     font-weight: bold;
     color: #dc2626;
@@ -180,16 +222,22 @@ body {
     transform: scale(0.97);
 }
 
-/* ---------- Jump animation ----------
-   Peak: 180 px at 350 px container ≈ 56 % from bottom. */
-.jumping {
-    animation: jump 0.7s ease-in-out;
-}
 
+/* ---------- Jump keyframes ----------
+   Peak: 180 px at 350 px container ≈ 56 % from bottom.
+   Used by #dino.jumping defined in the sprite sheet section above. */
 @keyframes jump {
-    0%   { bottom: 5.71%; }
-    50%  { bottom: 56%; }
-    100% { bottom: 5.71%; }
+    0% {
+        bottom: 5.71%;
+    }
+
+    50% {
+        bottom: 56%;
+    }
+
+    100% {
+        bottom: 5.71%;
+    }
 }
 
 /* ---------- Very small phones (< 380 px) ---------- */

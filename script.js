@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cactus.style.right = '-6.25%';  // off-screen (mirrors CSS default)
 
         // Reiniciar animação do fundo
-        gameContainer.style.animation = 'moveBackground 60s linear infinite';
+        gameContainer.style.animation = 'moveBackground 8s linear infinite';
 
         // Contagem de pontos
         scoreInterval = setInterval(() => {
@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cactusRight = -(w * 0.0625); // -6.25 % da largura
         }
 
-        // Velocidade proporcional ao container (≈ 5 px a 800 px)
-        const speed = w * 0.00625;
+        // Velocidade proporcional ao container (≈ 10 px a 800 px)
+        const speed = w * 0.0125;
         cactus.style.right = `${cactusRight + speed}px`;
 
         // ---- Detecção de colisão (todos os valores em px) ----
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameMusic.currentTime = 0;
 
         // Parar animação do fundo
-        gameContainer.style.animation = 'stopBackground 60s linear infinite';
+        gameContainer.style.animation = 'stopBackground 8s linear infinite';
 
         // Atualizar recorde
         if (score > highScore) {
