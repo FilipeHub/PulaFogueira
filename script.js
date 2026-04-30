@@ -37,13 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Iniciar / Reiniciar
     // -------------------------------------------------------
     function startGame() {
-        console.log(" startGame")
         gameStarted = true;
 
         // Mobile autoplay policy: play() returns a Promise
         gameMusic.play().catch(() => { /* silently ignore */ });
 
         isGameOver = false;
+        dino.classList.remove('dead');
+        dino.classList.remove('jumping'); // reset jump state if any
         dino.style.animationPlayState = 'running';
         score = 0;
         scoreDisplay.textContent = score;
@@ -140,6 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Parar animação do fundo
         gameContainer.style.animation = 'stopBackground 16s linear infinite';
 
+        // Mudar imagem do personagem
+        dino.classList.add('dead');
+
         // Atualizar recorde
         if (score > highScore) {
             highScore = score;
@@ -158,6 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault(); // impede scroll da página
             if (gameStarted && !isGameOver) {
                 jump();
+            } else if ((event.code === 'Space' || event.code === 'ArrowUp') && isGameOver) {
+                startGame();
             }
         }
     });

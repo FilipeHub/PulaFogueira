@@ -103,6 +103,14 @@ body {
         jump 0.7s ease-in-out;
 }
 
+/* Game over state: show gameover.png and stop animations */
+#dino.dead {
+    background-image: url('images/gameover.png');
+    background-size: contain;
+    background-position: bottom center;
+    animation: none;
+}
+
 @keyframes run-cycle {
     from {
         background-position: 0% bottom;
