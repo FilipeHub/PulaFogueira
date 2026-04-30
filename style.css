@@ -38,7 +38,7 @@ body {
     background-size: cover;
     background-repeat: repeat-x;
     background-position: 0 0;
-    animation: moveBackground 8s linear infinite;
+    animation: moveBackground 30s linear infinite;
     cursor: pointer;
 }
 

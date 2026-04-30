@@ -1,22 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const gameMusic        = document.getElementById('game-music');
-    const dino             = document.getElementById('dino');
-    const cactus           = document.getElementById('cactus');
-    const scoreDisplay     = document.getElementById('score');
+    const gameMusic = document.getElementById('game-music');
+    const dino = document.getElementById('dino');
+    const cactus = document.getElementById('cactus');
+    const scoreDisplay = document.getElementById('score');
     const highScoreDisplay = document.getElementById('high-score');
-    const gameOverDisplay  = document.getElementById('game-over');
-    const restartButton    = document.getElementById('restart-button');
-    const gameContainer    = document.querySelector('.game-container');
+    const gameOverDisplay = document.getElementById('game-over');
+    const restartButton = document.getElementById('restart-button');
+    const gameContainer = document.querySelector('.game-container');
 
-    let isJumping   = false;
-    let isGameOver  = false;
-    let score       = 0;
-    let highScore   = 0;
+    let isJumping = false;
+    let isGameOver = false;
+    let score = 0;
+    let highScore = 0;
     let animationId;
     let scoreInterval;
     let gameStarted = false;
 
     gameMusic.volume = 0.5;
+
+    // Estado inicial parado
+    dino.style.animationPlayState = 'paused';
+    gameContainer.style.animation = 'none';
 
     // -------------------------------------------------------
     // Helper: live pixel dimensions of the container.
@@ -33,13 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Iniciar / Reiniciar
     // -------------------------------------------------------
     function startGame() {
+        console.log(" startGame")
         gameStarted = true;
 
         // Mobile autoplay policy: play() returns a Promise
         gameMusic.play().catch(() => { /* silently ignore */ });
 
         isGameOver = false;
-        score      = 0;
+        dino.style.animationPlayState = 'running';
+        score = 0;
         scoreDisplay.textContent = score;
         gameOverDisplay.classList.add('hidden');
         restartButton.hidden = true;
@@ -48,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cactus.style.right = '-6.25%';  // off-screen (mirrors CSS default)
 
         // Reiniciar animação do fundo
-        gameContainer.style.animation = 'moveBackground 8s linear infinite';
+        gameContainer.style.animation = 'moveBackground 30s linear infinite';
 
         // Contagem de pontos
         scoreInterval = setInterval(() => {
@@ -82,20 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cactus.style.right = `${cactusRight + speed}px`;
 
         // ---- Detecção de colisão (todos os valores em px) ----
-        const groundH    = h * 0.0571;          // 5.71 % = 20 / 350
-        const dinoW      = w * 0.075;           // 7.5 %  = 60 / 800
-        const dinoLeft   = w * 0.0625;          // 6.25 % = 50 / 800
-        const dinoRight  = dinoLeft + dinoW;
+        const groundH = h * 0.0571;          // 5.71 % = 20 / 350
+        const dinoW = w * 0.075;           // 7.5 %  = 60 / 800
+        const dinoLeft = w * 0.0625;          // 6.25 % = 50 / 800
+        const dinoRight = dinoLeft + dinoW;
         const dinoBottom = parseFloat(window.getComputedStyle(dino).getPropertyValue('bottom'));
 
-        const cactusW     = w * 0.0375;         // 3.75 % = 30 / 800
-        const cactusLeft  = w - cactusRight - cactusW;
+        const cactusW = w * 0.0375;         // 3.75 % = 30 / 800
+        const cactusLeft = w - cactusRight - cactusW;
         const cactusRight2 = cactusLeft + cactusW;
-        const cactusH     = cactusW;            // fogo é aprox. quadrado
+        const cactusH = cactusW;            // fogo é aprox. quadrado
 
         if (
-            dinoRight  > cactusLeft  &&
-            dinoLeft   < cactusRight2 &&
+            dinoRight > cactusLeft &&
+            dinoLeft < cactusRight2 &&
             dinoBottom < groundH + cactusH
         ) {
             gameOver();
@@ -132,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameMusic.currentTime = 0;
 
         // Parar animação do fundo
-        gameContainer.style.animation = 'stopBackground 8s linear infinite';
+        gameContainer.style.animation = 'stopBackground 16s linear infinite';
 
         // Atualizar recorde
         if (score > highScore) {
@@ -150,10 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space' || event.code === 'ArrowUp') {
             event.preventDefault(); // impede scroll da página
-            if (!isGameOver) {
+            if (gameStarted && !isGameOver) {
                 jump();
-            } else {
-                startGame();
             }
         }
     });
@@ -166,10 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         e.preventDefault();
 
-        if (!isGameOver) {
+        if (gameStarted && !isGameOver) {
             jump();
-        } else {
-            startGame();
         }
     }
 
@@ -187,7 +189,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // -------------------------------------------------------
-    // Início
-    // -------------------------------------------------------
-    startGame();
+    // Início (aguardando o botão ser pressionado)
 });
