@@ -1,5 +1,5 @@
-/* =========================================================
-   PULA FOGUEIRA — Responsive Styles
+ /* =========================================================
+   PULA FOGUEIRA — Responsive Styles (ATUALIZADO)
    ========================================================= */
 
 /* ---------- Reset ---------- */
@@ -17,11 +17,15 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    background: linear-gradient(
+    to bottom,
+    #070b13 0%,
+    #1e293b 35%,
+    #7c2d12 70%,
+    #f86a04 100%
+);
     background-attachment: fixed;
-    /* Prevent pull-to-refresh / iOS rubber-band bounce */
     overscroll-behavior: none;
-    /* Remove 300 ms tap delay on mobile */
     touch-action: manipulation;
 }
 
@@ -43,39 +47,43 @@ body {
 
 .game-title {
     font-family: 'Londrina Solid', cursive;
-    font-size: clamp(40px, 10vw, 72px);
+    font-size: clamp(42px, 9vw, 78px);
     color: #fef08a;
-    text-shadow: 3px 3px 0 #b91c1c, -2px -2px 0 #b91c1c, 2px -2px 0 #b91c1c, -2px 2px 0 #b91c1c, 0 6px 12px rgba(0,0,0,0.5);
-    letter-spacing: 2px;
+    text-shadow: 0px 3px 0 #7f1d1d,
+        0 6px 15px rgba(0,0,0,0.5);
+    letter-spacing: 3px;
     margin: 0;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.4));
+    transform: translate(0);
 }
 
-/* ---------- Game Container ----------
-   Fills viewport width up to 800 px.
-   Height is always 43.75 % of width (350 / 800 ratio). */
+/* ---------- Game Container ---------- */
 .game-container {
     position: relative;
     width: min(100vw, 800px);
     aspect-ratio: 800 / 350;
-    border: 6px solid #78350f;
-    border-radius: 12px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4), 0 0 0 6px rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    border: 2px solid rgba(255, 255 255, 0.08);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.55),
+        inset 0 0 50px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     background-color: #87ceeb;
     background-image: url('images/background2.png');
     background-size: cover;
     background-repeat: repeat-x;
     background-position: 0 0;
+    filter: saturate(1.1) contrast(1.05) brightness(0.95);
     animation: moveBackground 30s linear infinite;
+    will-change: background-position;
+    transform: translate(0);
     cursor: pointer;
 }
 
-/* ---------- Background animations ---------- */
+/* ---------- Background animation ---------- */
 @keyframes moveBackground {
     from {
         background-position: 0 0;
     }
-
     to {
         background-position: -10000px 0;
     }
@@ -85,14 +93,12 @@ body {
     from {
         background-position: 0 0;
     }
-
     to {
         background-position: 0 0;
     }
 }
 
-/* ---------- Ground ----------
-   20 px at 350 px height = 5.71 % */
+/* ---------- Ground ---------- */
 #ground {
     position: absolute;
     bottom: 0;
@@ -101,198 +107,304 @@ body {
     background-color: #535353;
 }
 
-/* ---------- Character (Pedro) — Sprite Sheet ----------
-   Sprite sheet: 2064 × 512 px, 4 frames (each 516 × 512 px).
-   The element shows ONE frame at a time.
-   background-size: 400% → the full sheet spans 4× the element width,
-   so each 25% step reveals exactly one frame.
-   steps(4) snaps positions — no interpolation between frames. */
+/* ---------- DINO (AGORA COM IMAGENS JS) ---------- */
 #dino {
     position: absolute;
     bottom: 5.71%;
-    /* sits on top of ground */
     left: 6.25%;
-    /* 50 / 800 */
-    width: 7.5%;
-    /* 60 / 800 */
-    height: 17.14%;
-    /* 60 / 350 */
-    background-image: url('images/pedro-spritesheet.png');
-    background-size: 400% auto;
+
+    width: clamp(40px, 10vw, 60px);
+    height: clamp(40px, 10vw, 60px);
+
     background-repeat: no-repeat;
-    background-position: 0% bottom;
-    animation: run-cycle 0.4s steps(4) infinite;
+    background-size: contain;
+    background-position: center;
+
+    will-change: transform;
+    transform: translateZ(0);
+
+    
+    image-rendering: auto;
+    filter: contrast(1.1) saturate(1.2) brightness(1.05);
+
 }
 
-/* Pause sprite cycling during jump so the frame stays clean */
+/* Jump */
 #dino.jumping {
-    animation:
-        run-cycle 0.4s steps(4) infinite paused,
-        jump 0.7s ease-in-out;
+    animation: jump 0.7s ease-in-out;
 }
 
-/* Game over state: show gameover.png and stop animations */
+/* Game over */
 #dino.dead {
     background-image: url('images/gameover.png');
     background-size: contain;
-    background-position: bottom center;
+    background-position: center;
     animation: none;
 }
 
-@keyframes run-cycle {
-    from {
-        background-position: 0% bottom;
-    }
-
-    to {
-        background-position: 100% bottom;
-    }
-}
-
-/* ---------- Obstacle (fire / cactus) ----------
-   30 × 30 px at 800 × 350 → 3.75 % wide, 8.57 % tall */
+/* ---------- Obstacle ---------- */
 #cactus {
     position: absolute;
     bottom: 5.71%;
     right: -6.25%;
-    /* off-screen to the right */
+
     width: 3.75%;
-    /* 30 / 800 */
     height: 8.57%;
-    /* 30 / 350 */
+
     background-image: url('images/fogo-semfundo.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom center;
+
+    /* 🔥 efeito de brilho realista */
+    filter:
+        drop-shadow(0 0 6px #ffb703)
+        drop-shadow(0 0 14px #ff6b00)
+        drop-shadow(0 0 28px #ff0000);
+
+    /* 🎮 sensação de chama viva */
+    animation:
+        fireGlow 0.8s infinite ease-in-out,
+        fireShake 0.15s infinite;
 }
 
-/* ---------- Score ---------- */
-#score {
-    position: absolute;
-    top: 2.86%;
-    right: 2.5%;
-    font-family: 'Londrina Solid', cursive;
-    font-size: clamp(20px, 4vw, 28px);
-    font-weight: 900;
-    color: #fde047;
-    text-shadow: 2px 2px 0px #b91c1c, -1px -1px 0px #b91c1c, 1px -1px 0px #b91c1c, -1px 1px 0px #b91c1c, 2px 4px 4px rgba(0,0,0,0.4);
-    letter-spacing: 1px;
-}
 
-/* ---------- High Score ---------- */
+
 #high-score {
     position: absolute;
-    top: 2.86%;
-    right: 15%;
+    top: 12px;
+    right: 12px;
+
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+
     font-family: 'Londrina Solid', cursive;
-    font-size: clamp(20px, 4vw, 28px);
-    font-weight: 900;
-    color: #fde047;
-    text-shadow: 2px 2px 0px #b91c1c, -1px -1px 0px #b91c1c, 1px -1px 0px #b91c1c, -1px 1px 0px #b91c1c, 2px 4px 4px rgba(0,0,0,0.4);
-    letter-spacing: 1px;
+    font-size: 15px;
+
+    color: #fbbf24;
+
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+
+    text-align: center;
+    z-index: 10;
 }
 
-/* ---------- Game Over ---------- */
+#score {
+    position: absolute;
+    top: 42px; /* fica abaixo do high-score */
+    right: 12px;
+
+    padding: 6px 14px;
+    border-radius: 12px;
+
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+
+    font-family: 'Londrina Solid', cursive;
+    font-size: 20px;
+
+    color: #fbbf24;
+
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+
+    text-align: center;
+    z-index: 10;
+}
+
+
 #game-over {
     position: absolute;
-    top: 30%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: 'Londrina Solid', cursive;
-    font-size: clamp(36px, 8vw, 60px);
+    font-size: clamp(38px, 8vw, 64px);
     font-weight: 900;
-    color: #fef08a;
-    text-shadow: 3px 3px 0 #b91c1c, -2px -2px 0 #b91c1c, 2px -2px 0 #b91c1c, -2px 2px 0 #b91c1c, 0 6px 12px rgba(0,0,0,0.6);
-    letter-spacing: 2px;
-    white-space: nowrap;
-    animation-play-state: paused;
+
+    color: #ffb703;
+
+    /* 🔥 chama mais natural */
+    text-shadow:
+        0 -2px 4px #ffb703,
+        0 -6px 10px #ff6b00,
+        0 -12px 20px #ff4500,
+        0 -18px 35px #ff0000;
+
+    animation: flameMove 0.6s infinite ease-in-out;
 }
+
+@keyframes flameMove {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        transform: translate(-50%, -52%) scale(1.03);
+        filter: hue-rotate(10deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        filter: hue-rotate(0deg);
+    }
+}
+
+#game-over::before {
+    content: "";
+    position: absolute;
+    inset: -60px;
+
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 100, 0, 0.25),
+        transparent 60%
+    );
+
+    filter: blur(20px);
+    animation: smokeDrift 2s infinite ease-in-out;
+    z-index: -1;
+}
+
+@keyframes smokeDrift {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translateY(-8px) scale(1.1);
+        opacity: 0.2;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+    }
+}
+#game-over::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,200,0,0.9) 2px, transparent 3px),
+        radial-gradient(circle at 70% 60%, rgba(255,120,0,0.7) 2px, transparent 3px),
+        radial-gradient(circle at 40% 80%, rgba(255,80,0,0.6) 2px, transparent 3px);
+
+    animation: sparksFloat 1s infinite linear;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+@keyframes sparksFloat {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-15px);
+    }
+}
+
 
 /* ---------- Utility ---------- */
 .hidden {
     display: none;
+    
 }
 
-/* ---------- Instructions ---------- */
 .instructions {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    padding: 15px 20px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-    border: 3px dashed #ea580c;
+    position: relative;
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 16px 22px;
+    border: 1px solid rgba(255, 183, 3, 0.25);
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 0 20px rgba(255, 115, 0, 0.08);
     margin-top: 25px;
     text-align: center;
-    max-width: 90vw;
+    max-width: 92vw;
+    transform: translateZ(0);
 }
 
 .instruction-text {
-    font-size: clamp(14px, 3.5vw, 18px);
-    font-weight: bold;
-    color: #78350f;
-    margin-bottom: 12px;
-}
+    font-size: clamp(13px, 3.2vw, 18px);
+    font-weight: 800;
+    font-family: 'Londrina Solid', 'Arial Black', sans-serif;
+    color: #fbf4d5;
+    letter-spacing: 2px;
+    line-height: 1.5;
+    text-shadow:
+        0 2px 0 rgba(0,0,0,0.5),
+        0 6px 12px rgba(0,0,0,0.35);
 
-.credits {
-    font-size: clamp(12px, 2.5vw, 15px);
-    color: #9a3412;
-    margin-top: 10px;
-    font-weight: bold;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
 }
-
-/* ---------- Restart Button ---------- */
 #restart-button {
-    margin-top: 5px;
-    padding: clamp(8px, 2vw, 12px) clamp(20px, 4vw, 30px);
-    background-color: #16a34a;
-    color: white;
+    margin-top: 8px;
+    padding: clamp(10px, 2vw, 14px) clamp(22px, 4vw, 14px);
     border: none;
-    border-bottom: 5px solid #14532d;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
     font-family: 'Londrina Solid', cursive;
-    font-size: clamp(20px, 4vw, 26px);
+    font-size: clamp(18px, 4vw, 24px);
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 0px rgba(0,0,0,0.4);
-    transition: background-color 0.1s, transform 0.1s, border-bottom-width 0.1s, margin-bottom 0.1s;
-    /* Apple / Google tap-target minimum */
-    min-height: 50px;
-    min-width: 140px;
+    letter-spacing: 2px;
+    color: #1a120b;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.35),
+        0 0 18px rgba(249, 115, 22, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-#restart-button:hover,
-#restart-button:focus {
-    background-color: #15803d;
-    outline: none;
+/* interação mais responsiva estilo jogo */
+#restart-button:active {
+    transform: translateY(3px) scale(0.98); 
+    box-shadow:
+        0 6px 12px rgba(0,0,0,0.3),
+        0 0 10px rgba(249, 115, 22, 0.25);
 }
 
 #restart-button:active {
     transform: translateY(4px);
     border-bottom-width: 1px;
-    margin-bottom: 4px;
 }
 
-
-/* ---------- Jump keyframes ----------
-   Peak: 180 px at 350 px container ≈ 56 % from bottom.
-   Used by #dino.jumping defined in the sprite sheet section above. */
+/* ---------- Jump ---------- */
 @keyframes jump {
-    0% {
-        bottom: 5.71%;
-    }
-
-    50% {
-        bottom: 56%;
-    }
-
-    100% {
-        bottom: 5.71%;
-    }
+    0% { bottom: 5.71%; }
+    50% { bottom: 56%; }
+    100% { bottom: 5.71%; }
 }
 
-/* ---------- Very small phones (< 380 px) ---------- */
-@media (max-width: 380px) {
-    .instructions {
-        margin-top: 8px;
+
+footer {
+    margin-top: 16px;
+    font-family: 'Londrina Solid', cursive;
+    font-size: 12px;
+    color: #ffff;
+    text-align: center;
+    padding: 8px 0;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+
+    #cactus {
+        width: 6%;
+        height: 10%;
+    }
+
+    #score,
+    #high-score {
+        font-size: 14px;
+    }
+
+    #game-over {
+        font-size: 28px;
+    }
+
+    #restart-button {
+        font-size: 14px;
+        min-width: 100px;
     }
 }
