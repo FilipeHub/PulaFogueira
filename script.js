@@ -1,4 +1,12 @@
+document.fonts.ready.then(() => {
+  document.documentElement.style.visibility = "visible";
+});
+
+// 🔥 RANKING GLOBAL
+let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
+
 document.addEventListener('DOMContentLoaded', () => {
+
     const gameMusic = document.getElementById('game-music');
     const dino = document.getElementById('dino');
     const cactus = document.getElementById('cactus');
@@ -7,19 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverDisplay = document.getElementById('game-over');
     const restartButton = document.getElementById('restart-button');
     const gameContainer = document.querySelector('.game-container');
+    const instructions = document.querySelector(".instructions");
+    const input = document.getElementById("player-name");
+    const jumpSound = new Audio("audios/jump.mp3");
+    
 
     let isJumping = false;
     let isGameOver = false;
     let score = 0;
-    let highScore = 0;
     let animationId;
     let scoreInterval;
     let gameStarted = false;
+    let jogadorAtual = "";
+    let proximoSpawn = 0;
 
     gameMusic.volume = 0.5;
 
     // ----------------------------
-    // SPRITE POR IMAGENS (NOVO)
+    // INPUT FORMAT
+    // ----------------------------
+    input.addEventListener("input", () => {
+        let valor = input.value;
+
+        if (valor.length > 0) {
+            input.value =
+                valor.charAt(0).toUpperCase() +
+                valor.slice(1).toLowerCase();
+        }
+    });
+
+    // ----------------------------
+    // SPRITES
     // ----------------------------
     const dinoFrames = [
         "images/run01.png",
@@ -27,23 +53,19 @@ document.addEventListener('DOMContentLoaded', () => {
         "images/run03.png",
         "images/run04.png"
     ];
+    const dinoDeadImage = "images/gameover.png";
 
     let frameIndex = 0;
     let runInterval = null;
 
-    // Estado inicial parado
     gameContainer.style.animation = 'none';
     setIdle();
 
-    // ----------------------------
-    // ANIMAÇÃO DO PERSONAGEM
-    // ----------------------------
     function startRunAnimation() {
         stopRunAnimation();
 
         runInterval = setInterval(() => {
             dino.style.backgroundImage = `url(${dinoFrames[frameIndex]})`;
-
             frameIndex = (frameIndex + 1) % dinoFrames.length;
         }, 100);
     }
@@ -59,9 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         dino.style.backgroundImage = `url(${dinoFrames[0]})`;
     }
 
-    // ----------------------------
-    // HELPERS
-    // ----------------------------
     function containerSize() {
         return {
             w: gameContainer.offsetWidth,
@@ -70,15 +89,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------
+    // DONO DA FOGUEIRA
+    // ----------------------------
+    function atualizarPlacarDono() {
+        const top = ranking[0];
+
+        if (top) {
+            highScoreDisplay.textContent = `🔥 Dono da fogueira: ${top.nome} - ${top.pontos}`;
+        } else {
+            highScoreDisplay.textContent = `🔥 Dono da fogueira: 0`;
+        }
+    }
+
+    // ----------------------------
     // START GAME
     // ----------------------------
     function startGame() {
+
+        const playerName = input.value.trim();
+
+        if (!playerName || !nomeValido(playerName)) {
+            alert("Nome inválido! Use apenas letras!");
+            return;
+        }
+
+        jogadorAtual = playerName;
         gameStarted = true;
 
         gameMusic.play().catch(() => {});
 
         isGameOver = false;
         dino.classList.remove('dead');
+        setIdle();
 
         frameIndex = 0;
         startRunAnimation();
@@ -91,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cactus.classList.remove('hidden');
         cactus.style.right = '-6.25%';
+        cactus.style.transform = "scale(1)";
 
         gameContainer.style.animation = 'moveBackground 30s linear infinite';
 
@@ -102,31 +145,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
 
         animateGame();
+        instructions.style.display = "none";
     }
 
     // ----------------------------
     // GAME LOOP
     // ----------------------------
     function animateGame() {
-        if (isGameOver) return;
+    if (isGameOver) return;
 
-        const { w, h } = containerSize();
+    const { w, h } = containerSize();
 
-        let cactusRight = parseFloat(
-            window.getComputedStyle(cactus).getPropertyValue('right')
-        );
+    let cactusRight = parseFloat(
+        window.getComputedStyle(cactus).getPropertyValue('right')
+    );
 
-        if (cactusRight > w) {
-            cactusRight = -(w * 0.0625);
+    // 🔥 velocidade dinâmica
+    let speed;
+
+    if (score <= 250) {
+        speed = w * (0.0125 + score * 0.00005);
+    } else {
+        speed = w * 0.010;
+    }
+
+    cactusRight += speed;
+
+    // 🔥 reaparecimento com dificuldade
+    if (cactusRight > w) {
+
+        let proximoSpawn;
+
+        if (score > 200) {
+            proximoSpawn = Math.random() * 40 + 20;
+        } else {
+            proximoSpawn = Math.random() * 120 + 60;
         }
 
-        const speed = w * 0.0125;
-        cactus.style.right = `${cactusRight + speed}px`;
+        const escala = 1 + Math.random() * 0.3;
+        cactus.style.transform = `scale(${escala})`;
+
+        cactusRight = -(w * 0.0625) - proximoSpawn;
+    }
+
+    cactus.style.right = `${cactusRight}px`;
+
+        
 
         const groundH = h * 0.0571;
         const dinoW = w * 0.075;
         const dinoLeft = w * 0.0625;
         const dinoRight = dinoLeft + dinoW;
+
         const dinoBottom = parseFloat(
             window.getComputedStyle(dino).getPropertyValue('bottom')
         );
@@ -152,9 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // JUMP
     // ----------------------------
     function jump() {
-        if (isJumping || isGameOver) return;
+    if (isJumping || isGameOver) return;
 
-        isJumping = true;
+    jumpSound.currentTime = 0;
+    jumpSound.play();
+
+    isJumping = true;
 
         stopRunAnimation();
 
@@ -168,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 startRunAnimation();
             }
         }, 700);
+    
     }
 
     // ----------------------------
@@ -185,22 +259,44 @@ document.addEventListener('DOMContentLoaded', () => {
         gameContainer.style.animation = 'stopBackground 16s linear infinite';
 
         stopRunAnimation();
-        dino.classList.add('dead');
-        setIdle();
 
-        if (score > highScore) {
-            highScore = score;
-            highScoreDisplay.textContent = `Dono da Fogueira: ${highScore}`;
-        }
+        dino.classList.add('dead');
+        dino.style.backgroundImage = `url(${dinoDeadImage})`;
+
+        atualizarRanking(jogadorAtual, score);
+        renderRanking();
+        atualizarPlacarDono();
 
         gameOverDisplay.classList.remove('hidden');
         restartButton.hidden = false;
         cactus.classList.add('hit');
+
+        instructions.style.display = "flex";
     }
-    
 
     // ----------------------------
-    // CONTROLES TECLADO
+    // RANKING
+    // ----------------------------
+    function nomeValido(nome) {
+        const regex = /^[a-zA-Z0-9._-]+$/;
+        return regex.test(nome);
+    }
+
+    function renderRanking() {
+        const div = document.getElementById("ranking");
+
+        div.innerHTML = "<h3>🏆 Ranking</h3>";
+
+        ranking.forEach((j, i) => {
+            div.innerHTML += `<p>${i + 1}. ${j.nome} - ${j.pontos}</p>`;
+        });
+    }
+
+    renderRanking();
+    atualizarPlacarDono();
+
+    // ----------------------------
+    // CONTROLES
     // ----------------------------
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space' || event.code === 'ArrowUp') {
@@ -210,14 +306,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 jump();
             } else if (isGameOver) {
                 startGame();
-                
             }
         }
     });
 
-    // ----------------------------
-    // TOQUE MOBILE
-    // ----------------------------
     function handleTap(e) {
         if (e.target === restartButton) return;
 
@@ -231,11 +323,36 @@ document.addEventListener('DOMContentLoaded', () => {
     gameContainer.addEventListener('touchstart', handleTap, { passive: false });
     gameContainer.addEventListener('click', handleTap);
 
-    // ----------------------------
-    // RESTART
-    // ----------------------------
     restartButton.addEventListener('click', (e) => {
         e.stopPropagation();
         startGame();
     });
 });
+
+// ----------------------------
+// ATUALIZAR RANKING
+// ----------------------------
+function atualizarRanking(nome, pontos) {
+
+    // procura se o jogador já existe
+    const jogadorExistente = ranking.find(j => j.nome === nome);
+
+    if (jogadorExistente) {
+        // 🔥 só atualiza se a nova pontuação for MAIOR
+        if (pontos > jogadorExistente.pontos) {
+            jogadorExistente.pontos = pontos;
+        }
+    } else {
+        // jogador novo
+        ranking.push({ nome, pontos });
+    }
+
+    // ordena do maior para o menor
+    ranking.sort((a, b) => b.pontos - a.pontos);
+
+    // mantém só top 3
+    ranking = ranking.slice(0, 3);
+
+    // salva
+    localStorage.setItem("ranking", JSON.stringify(ranking));
+}

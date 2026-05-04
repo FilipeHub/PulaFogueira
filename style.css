@@ -1,7 +1,13 @@
  /* =========================================================
    PULA FOGUEIRA — Responsive Styles (ATUALIZADO)
    ========================================================= */
-
+html {
+  visibility: hidden;
+}
+   html, body {
+    width: 100%;
+    overflow-x: hidden; /* 🔥 evita bug de vw */
+}
 /* ---------- Reset ---------- */
 * {
     margin: 0;
@@ -11,11 +17,12 @@
 
 /* ---------- Body ---------- */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Londrina Solid', Arial, sans-serif;
+    font-weight: 900;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: 100vh;
     background: linear-gradient(
     to bottom,
@@ -40,8 +47,10 @@ body {
 }
 
 .game-logo {
-    width: clamp(60px, 15vw, 100px);
-    height: auto;
+    width: clamp(60px, 12vw, 100px);
+    aspect-ratio: 1 / 1; /* 🔥 evita pulo */
+    object-fit: contain;
+    display: block;
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
 }
 
@@ -54,26 +63,24 @@ body {
     letter-spacing: 3px;
     margin: 0;
     filter: drop-shadow(0 6px 10px rgba(0,0,0,0.4));
-    transform: translate(0);
 }
 
 /* ---------- Game Container ---------- */
 .game-container {
     position: relative;
-    width: min(100vw, 800px);
+    width: min(100%, 800px);
     aspect-ratio: 800 / 350;
     border-radius: 24px;
     border: 2px solid rgba(255, 255 255, 0.08);
     box-shadow: 0 25px 60px rgba(0,0,0,0.55),
         inset 0 0 50px rgba(0, 0, 0, 0.25);
     overflow: hidden;
-    background-color: #87ceeb;
     background-image: url('images/background2.png');
     background-size: cover;
     background-repeat: repeat-x;
     background-position: 0 0;
     filter: saturate(1.1) contrast(1.05) brightness(0.95);
-    animation: moveBackground 30s linear infinite;
+    animation: moveBackground 60s linear infinite;
     will-change: background-position;
     transform: translate(0);
     cursor: pointer;
@@ -172,43 +179,36 @@ body {
 
 #high-score {
     position: absolute;
-    top: 12px;
-    right: 12px;
-
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(6px);
-
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'Londrina Solid', cursive;
     font-size: 15px;
-
     color: #fbbf24;
-
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-
-    text-align: center;
     z-index: 10;
+    padding: 6px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    text-align: center;
 }
 
 #score {
     position: absolute;
-    top: 42px; /* fica abaixo do high-score */
-    right: 12px;
-
-    padding: 6px 14px;
-    border-radius: 12px;
-
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(6px);
-
+    top: 33px; /* fica abaixo do high-score */
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'Londrina Solid', cursive;
     font-size: 20px;
-
     color: #fbbf24;
-
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-
     text-align: center;
     z-index: 10;
+    padding: 6px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
 }
 
 
@@ -308,44 +308,70 @@ body {
     display: none;
     
 }
-
 .instructions {
-    position: relative;
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    padding: 16px 22px;
-    border: 1px solid rgba(255, 183, 3, 0.25);
-    box-shadow:
-        0 12px 30px rgba(0,0,0,0.35),
-        inset 0 0 20px rgba(255, 115, 0, 0.08);
-    margin-top: 25px;
+    position: static;
+    margin-top: 0px; /* espaço abaixo do container */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px;
     text-align: center;
-    max-width: 92vw;
-    transform: translateZ(0);
 }
 
 .instruction-text {
-    font-size: clamp(13px, 3.2vw, 18px);
-    font-weight: 800;
+    font-size: clamp(13px, 3.2vw, 14px);
+    font-weight: 400;
     font-family: 'Londrina Solid', 'Arial Black', sans-serif;
     color: #fbf4d5;
     letter-spacing: 2px;
-    line-height: 1.5;
-    text-shadow:
-        0 2px 0 rgba(0,0,0,0.5),
-        0 6px 12px rgba(0,0,0,0.35);
-
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
 }
-#restart-button {
-    margin-top: 8px;
-    padding: clamp(10px, 2vw, 14px) clamp(22px, 4vw, 14px);
+.controls{
+    width: 100%;
+    height: 80px;
+    display: flex;              /* 🔥 ESSENCIAL */
+    justify-content: center;    /* horizontal */
+    align-items: center;        /* vertical */
+    gap: 10px;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 0 20px rgba(255, 115, 0, 0.08);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+}
+
+#player-name{
+    padding: clamp(8px, 2vw, 10px);
     border: none;
-    border-radius: 12px;
+    border-radius: 9px;
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(18px, 4vw, 14px);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: #d6c29e;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 0 20px rgba(255, 115, 0, 0.08);
+        border-radius: 10px;
+}
+
+#player-name::-webkit-input-placeholder {
+    color: #a2210a;
+}
+
+#player-name:focus {
+    outline: none;       /* remove a borda azul */
+    box-shadow: none;    /* remove brilho padrão */
+}
+
+#restart-button {
+    padding: clamp(8px, 2vw, 10px);
+    border: none;
+    border-radius: 9px;
     cursor: pointer;
     font-family: 'Londrina Solid', cursive;
-    font-size: clamp(18px, 4vw, 24px);
-    font-weight: 700;
+    font-size: clamp(18px, 4vw, 20px);
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #1a120b;
@@ -364,10 +390,19 @@ body {
         0 0 10px rgba(249, 115, 22, 0.25);
 }
 
-#restart-button:active {
-    transform: translateY(4px);
-    border-bottom-width: 1px;
+#ranking {
+  position: absolute;
+  right: 20px;
+  background: rgba(54, 19, 19, 0.6);
+  opacity: 2;
+  color: white;
+  font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 100;
+  padding: 10px;
+  border-radius: 10px;
 }
+
 
 /* ---------- Jump ---------- */
 @keyframes jump {
@@ -378,10 +413,14 @@ body {
 
 
 footer {
+    position:fixed;
+    bottom: 0px;
     margin-top: 16px;
-    font-family: 'Londrina Solid', cursive;
-    font-size: 12px;
-    color: #ffff;
+    font-family: Arial;
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 100;
+    color: #ffe4b6;
     text-align: center;
     padding: 8px 0;
 }
@@ -408,3 +447,18 @@ footer {
         min-width: 100px;
     }
 }
+
+
+
+
+
+/* 📱 mobile */
+@media (max-width: 768px) {
+  #ranking {
+    position: static;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
