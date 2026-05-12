@@ -39,11 +39,19 @@ body {
 /* ---------- Header ---------- */
 .game-header {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 12px;
+    margin-top: 10px;
+}
+
+.game-header-top {
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 20px;
-    margin-top: 10px;
 }
 
 .game-logo {
@@ -63,6 +71,17 @@ body {
     letter-spacing: 3px;
     margin: 0;
     filter: drop-shadow(0 6px 10px rgba(0,0,0,0.4));
+}
+
+.game-subtitle {
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(14px, 3vw, 28px);
+    color: #fcd34d;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    margin: 0;
+    text-align: center;
+    font-weight: 400;
 }
 
 /* ---------- Game Container ---------- */
@@ -462,3 +481,64 @@ footer {
   }
 }
 
+
+/* ---------- Ad Overlay ---------- */
+.ad-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.ad-overlay.hidden {
+    display: none;
+}
+
+.ad-box {
+    position: relative;
+    max-width: min(92vw, 480px);
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.ad-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+}
+
+.ad-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(20, 20, 20, 0.85);
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.15s ease;
+    z-index: 10000;
+}
+
+.ad-close:hover {
+    background: rgba(255, 80, 30, 0.9);
+    transform: scale(1.1);
+}
+
+.ad-close.hidden {
+    display: none;
+}

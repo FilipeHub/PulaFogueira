@@ -1,5 +1,5 @@
 document.fonts.ready.then(() => {
-  document.documentElement.style.visibility = "visible";
+    document.documentElement.style.visibility = "visible";
 });
 
 // 🔥 RANKING GLOBAL
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const instructions = document.querySelector(".instructions");
     const input = document.getElementById("player-name");
     const jumpSound = new Audio("audios/jump.mp3");
-    
+
 
     let isJumping = false;
     let isGameOver = false;
@@ -28,6 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameStarted = false;
     let jogadorAtual = "";
     let proximoSpawn = 0;
+    let gameOverCount = 0;
+
+    const adOverlay = document.getElementById('ad-overlay');
+    const adClose = document.getElementById('ad-close');
 
     gameMusic.volume = 0.5;
 
@@ -116,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jogadorAtual = playerName;
         gameStarted = true;
 
-        gameMusic.play().catch(() => {});
+        gameMusic.play().catch(() => { });
 
         isGameOver = false;
         dino.classList.remove('dead');
@@ -152,45 +156,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // GAME LOOP
     // ----------------------------
     function animateGame() {
-    if (isGameOver) return;
+        if (isGameOver) return;
 
-    const { w, h } = containerSize();
+        const { w, h } = containerSize();
 
-    let cactusRight = parseFloat(
-        window.getComputedStyle(cactus).getPropertyValue('right')
-    );
+        let cactusRight = parseFloat(
+            window.getComputedStyle(cactus).getPropertyValue('right')
+        );
 
-    // 🔥 velocidade dinâmica
-    let speed;
+        // 🔥 velocidade dinâmica
+        let speed;
 
-    if (score <= 250) {
-        speed = w * (0.0125 + score * 0.00005);
-    } else {
-        speed = w * 0.010;
-    }
-
-    cactusRight += speed;
-
-    // 🔥 reaparecimento com dificuldade
-    if (cactusRight > w) {
-
-        let proximoSpawn;
-
-        if (score > 200) {
-            proximoSpawn = Math.random() * 40 + 20;
+        if (score <= 250) {
+            speed = w * (0.0125 + score * 0.00005);
         } else {
-            proximoSpawn = Math.random() * 120 + 60;
+            speed = w * 0.010;
         }
 
-        const escala = 1 + Math.random() * 0.3;
-        cactus.style.transform = `scale(${escala})`;
+        cactusRight += speed;
 
-        cactusRight = -(w * 0.0625) - proximoSpawn;
-    }
+        // 🔥 reaparecimento com dificuldade
+        if (cactusRight > w) {
 
-    cactus.style.right = `${cactusRight}px`;
+            let proximoSpawn;
 
-        
+            if (score > 200) {
+                proximoSpawn = Math.random() * 40 + 20;
+            } else {
+                proximoSpawn = Math.random() * 120 + 60;
+            }
+
+            const escala = 1 + Math.random() * 0.3;
+            cactus.style.transform = `scale(${escala})`;
+
+            cactusRight = -(w * 0.0625) - proximoSpawn;
+        }
+
+        cactus.style.right = `${cactusRight}px`;
+
+
 
         const groundH = h * 0.0571;
         const dinoW = w * 0.075;
@@ -222,12 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // JUMP
     // ----------------------------
     function jump() {
-    if (isJumping || isGameOver) return;
+        if (isJumping || isGameOver) return;
 
-    jumpSound.currentTime = 0;
-    jumpSound.play();
+        jumpSound.currentTime = 0;
+        jumpSound.play();
 
-    isJumping = true;
+        isJumping = true;
 
         stopRunAnimation();
 
@@ -241,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 startRunAnimation();
             }
         }, 700);
-    
+
     }
 
     // ----------------------------
@@ -272,6 +276,28 @@ document.addEventListener('DOMContentLoaded', () => {
         cactus.classList.add('hit');
 
         instructions.style.display = "flex";
+
+        // 🔥 Ad every 3 game overs
+        gameOverCount++;
+        if (gameOverCount % 5 === 0) {
+            showAd();
+        }
+    }
+
+    // ----------------------------
+    // AD OVERLAY
+    // ----------------------------
+    function showAd() {
+        adOverlay.classList.remove('hidden');
+        adClose.classList.add('hidden');
+
+        setTimeout(() => {
+            adClose.classList.remove('hidden');
+        }, 1500);
+
+        adClose.onclick = () => {
+            adOverlay.classList.add('hidden');
+        };
     }
 
     // ----------------------------
