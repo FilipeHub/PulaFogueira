@@ -500,7 +500,7 @@ footer {
 
 .ad-box {
     position: relative;
-    max-width: min(92vw, 480px);
+    max-width: min(92vw, 960px);
     width: 100%;
     border-radius: 14px;
     overflow: hidden;
@@ -539,6 +539,41 @@ footer {
     transform: scale(1.1);
 }
 
-.ad-close.hidden {
+/* ---------- Botão PULAR ---------- */
+#jump-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+#jump-area.hidden {
     display: none;
+}
+
+#jump-button {
+    padding: clamp(12px, 3vw, 16px) clamp(32px, 8vw, 64px);
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a120b;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.35),
+        0 0 18px rgba(249, 115, 22, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#jump-button:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow:
+        0 6px 12px rgba(0,0,0,0.3),
+        0 0 10px rgba(249, 115, 22, 0.25);
 }

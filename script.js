@@ -29,9 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let jogadorAtual = "";
     let proximoSpawn = 0;
     let gameOverCount = 0;
+    let isAdVisible = false;
 
     const adOverlay = document.getElementById('ad-overlay');
     const adClose = document.getElementById('ad-close');
+    const jumpArea = document.getElementById('jump-area');
+    const jumpButton = document.getElementById('jump-button');
 
     gameMusic.volume = 0.5;
 
@@ -150,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         animateGame();
         instructions.style.display = "none";
+        jumpArea.classList.remove('hidden');
     }
 
     // ----------------------------
@@ -276,6 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cactus.classList.add('hit');
 
         instructions.style.display = "flex";
+        jumpArea.classList.add('hidden');
 
         // 🔥 Ad every 3 game overs
         gameOverCount++;
@@ -288,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // AD OVERLAY
     // ----------------------------
     function showAd() {
+        isAdVisible = true;
         adOverlay.classList.remove('hidden');
         adClose.classList.add('hidden');
 
@@ -297,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         adClose.onclick = () => {
             adOverlay.classList.add('hidden');
+            isAdVisible = false;
         };
     }
 
@@ -328,6 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.code === 'Space' || event.code === 'ArrowUp') {
             event.preventDefault();
 
+            if (isAdVisible) return;
+
             if (gameStarted && !isGameOver) {
                 jump();
             } else if (isGameOver) {
@@ -337,6 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function handleTap(e) {
+        if (isAdVisible) return;
         if (e.target === restartButton) return;
 
         e.preventDefault();
@@ -351,8 +361,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     restartButton.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (isAdVisible) return;
         startGame();
     });
+
+    jumpButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isAdVisible) return;
+        jump();
+    });
+
+    jumpButton.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (isAdVisible) return;
+        jump();
+    }, { passive: false });
 });
 
 // ----------------------------
