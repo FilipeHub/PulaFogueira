@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let proximoSpawn = 0;
     let gameOverCount = 0;
     let isAdVisible = false;
+    let lastTimestamp = null;
 
     const adOverlay = document.getElementById('ad-overlay');
     const adClose = document.getElementById('ad-close');
@@ -151,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 100);
 
-        animateGame();
+        lastTimestamp = null;
+        requestAnimationFrame(animateGame);
         instructions.style.display = "none";
         jumpArea.classList.remove('hidden');
     }
@@ -159,8 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------
     // GAME LOOP
     // ----------------------------
-    function animateGame() {
+    function animateGame(timestamp) {
         if (isGameOver) return;
+
+        // 🔥 Delta time: normaliza para 60fps em qualquer dispositivo
+        if (lastTimestamp === null) lastTimestamp = timestamp;
+        const elapsed = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+        const delta = Math.min(elapsed / 16.667, 3); // cap: evita salto após alt-tab
 
         const { w, h } = containerSize();
 
@@ -177,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             speed = w * 0.010;
         }
 
-        cactusRight += speed;
+        cactusRight += speed * delta;
 
         // 🔥 reaparecimento com dificuldade
         if (cactusRight > w) {

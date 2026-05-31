@@ -577,3 +577,71 @@ footer {
         0 6px 12px rgba(0,0,0,0.3),
         0 0 10px rgba(249, 115, 22, 0.25);
 }
+
+/* ---------- Landscape Mobile ---------- */
+@media (orientation: landscape) and (max-height: 500px) {
+
+    body {
+        justify-content: flex-start;
+        overflow-y: auto;
+        padding: 4px 8px env(safe-area-inset-bottom, 8px);
+        gap: 4px;
+    }
+
+    /* Header compacto: logo + título numa linha, subtítulo some */
+    .game-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin: 2px 0;
+    }
+
+    .game-subtitle { display: none; }
+
+    .game-logo { width: clamp(28px, 5vh, 40px); }
+
+    .game-title { font-size: clamp(20px, 5vh, 32px); }
+
+    /*
+     * Container limitado pela altura disponível.
+     * O browser usa aspect-ratio para calcular a largura automaticamente,
+     * mantendo as proporções do jogo intactas.
+     */
+    .game-container {
+        width: auto;
+        max-height: 46vh;
+        aspect-ratio: 800 / 350;
+        max-width: 100%;
+    }
+
+    /* Controles mais compactos */
+    .instructions {
+        gap: 4px;
+        padding: 4px 8px;
+        margin-top: 2px;
+    }
+
+    .controls { height: 52px; }
+
+    #restart-button,
+    #player-name {
+        font-size: clamp(14px, 3vh, 18px);
+        padding: 6px 12px;
+    }
+
+    #jump-area { margin-top: 4px; }
+
+    #jump-button {
+        font-size: clamp(16px, 3.5vh, 20px);
+        padding: 8px clamp(20px, 5vw, 40px);
+    }
+
+    /* Footer fixo atrapalha em landscape */
+    footer {
+        position: static;
+        padding: 2px 0;
+        font-size: 9px;
+    }
+
+    #ranking { margin-top: 4px; }
+}
