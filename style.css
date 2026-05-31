@@ -1,35 +1,111 @@
+ /* =========================================================
+   PULA FOGUEIRA — Responsive Styles (ATUALIZADO)
+   ========================================================= */
+html {
+  visibility: hidden;
+}
+   html, body {
+    width: 100%;
+    overflow-x: hidden; /* 🔥 evita bug de vw */
+}
+/* ---------- Reset ---------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* ---------- Body ---------- */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Londrina Solid', Arial, sans-serif;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    background: linear-gradient(
+    to bottom,
+    #070b13 0%,
+    #1e293b 35%,
+    #7c2d12 70%,
+    #f86a04 100%
+);
+    background-attachment: fixed;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+}
+
+/* ---------- Header ---------- */
+.game-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #f7f7f7;
+    gap: 4px;
+    margin-bottom: 12px;
+    margin-top: 10px;
 }
 
+.game-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.game-logo {
+    width: clamp(60px, 12vw, 100px);
+    aspect-ratio: 1 / 1; /* 🔥 evita pulo */
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
+}
+
+.game-title {
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(42px, 9vw, 78px);
+    color: #fef08a;
+    text-shadow: 0px 3px 0 #7f1d1d,
+        0 6px 15px rgba(0,0,0,0.5);
+    letter-spacing: 3px;
+    margin: 0;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.4));
+}
+
+.game-subtitle {
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(14px, 3vw, 28px);
+    color: #fcd34d;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    margin: 0;
+    text-align: center;
+    font-weight: 400;
+}
+
+/* ---------- Game Container ---------- */
 .game-container {
-    /* width: 100%; */
     position: relative;
-    width: 800px;
-    height: 350px;
-    border: 1px solid #ccc;
+    width: min(100%, 800px);
+    aspect-ratio: 800 / 350;
+    border-radius: 24px;
+    border: 2px solid rgba(255, 255 255, 0.08);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.55),
+        inset 0 0 50px rgba(0, 0, 0, 0.25);
     overflow: hidden;
-    background-color: white;
     background-image: url('images/background2.png');
     background-size: cover;
     background-repeat: repeat-x;
     background-position: 0 0;
+    filter: saturate(1.1) contrast(1.05) brightness(0.95);
     animation: moveBackground 60s linear infinite;
+    will-change: background-position;
+    transform: translate(0);
+    cursor: pointer;
 }
 
-
+/* ---------- Background animation ---------- */
 @keyframes moveBackground {
     from {
         background-position: 0 0;
@@ -48,99 +124,456 @@ body {
     }
 }
 
+/* ---------- Ground ---------- */
 #ground {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 20px;
+    height: 5.71%;
     background-color: #535353;
 }
 
+/* ---------- DINO (AGORA COM IMAGENS JS) ---------- */
 #dino {
     position: absolute;
-    bottom: 20px;
-    left: 50px;
-    width: 60px;
-    height: 60px;
-    background-image: url('images/pedro-semfundo.png');
-    background-size: contain;
+    bottom: 5.71%;
+    left: 6.25%;
+
+    width: clamp(40px, 10vw, 60px);
+    height: clamp(40px, 10vw, 60px);
+
     background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    will-change: transform;
+    transform: translateZ(0);
+
+    
+    image-rendering: auto;
+    filter: contrast(1.1) saturate(1.2) brightness(1.05);
+
 }
 
+/* Jump */
+#dino.jumping {
+    animation: jump 0.7s ease-in-out;
+}
+
+/* Game over */
+#dino.dead {
+    background-image: url('images/gameover.png');
+    background-size: contain;
+    background-position: center;
+    animation: none;
+}
+
+/* ---------- Obstacle ---------- */
 #cactus {
     position: absolute;
-    bottom: 20px;
-    right: -50px;
-    width: 30px;
-    height: 30px;
+    bottom: 5.71%;
+    right: -6.25%;
+
+    width: 3.75%;
+    height: 8.57%;
+
     background-image: url('images/fogo-semfundo.png');
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: bottom center;
+
+    /* 🔥 efeito de brilho realista */
+    filter:
+        drop-shadow(0 0 6px #ffb703)
+        drop-shadow(0 0 14px #ff6b00)
+        drop-shadow(0 0 28px #ff0000);
+
+    /* 🎮 sensação de chama viva */
+    animation:
+        fireGlow 0.8s infinite ease-in-out,
+        fireShake 0.15s infinite;
+}
+
+
+
+#high-score {
+    position: absolute;
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Londrina Solid', cursive;
+    font-size: 15px;
+    color: #fbbf24;
+    z-index: 10;
+    padding: 6px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    text-align: center;
 }
 
 #score {
     position: absolute;
-    top: 10px;
-    right: 20px;
+    top: 33px; /* fica abaixo do high-score */
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Londrina Solid', cursive;
     font-size: 20px;
-    color: #dc2626;
+    color: #fbbf24;
+    text-align: center;
+    z-index: 10;
+    padding: 6px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
 }
 
-#high-score {
-    position: absolute;
-    top: 10px;
-    right: 100px;
-    font-size: 20px;
-    color: #dc2626;
-}
 
 #game-over {
     position: absolute;
-    top: 30%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 30px;
-    font-weight: bold;
-    color: #dc2626;
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(38px, 8vw, 64px);
+    font-weight: 900;
 
-    animation-play-state: paused;
+    color: #ffb703;
+
+    /* 🔥 chama mais natural */
+    text-shadow:
+        0 -2px 4px #ffb703,
+        0 -6px 10px #ff6b00,
+        0 -12px 20px #ff4500,
+        0 -18px 35px #ff0000;
+
+    animation: flameMove 0.6s infinite ease-in-out;
 }
 
+@keyframes flameMove {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        transform: translate(-50%, -52%) scale(1.03);
+        filter: hue-rotate(10deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        filter: hue-rotate(0deg);
+    }
+}
+
+#game-over::before {
+    content: "";
+    position: absolute;
+    inset: -60px;
+
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 100, 0, 0.25),
+        transparent 60%
+    );
+
+    filter: blur(20px);
+    animation: smokeDrift 2s infinite ease-in-out;
+    z-index: -1;
+}
+
+@keyframes smokeDrift {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translateY(-8px) scale(1.1);
+        opacity: 0.2;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+    }
+}
+#game-over::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,200,0,0.9) 2px, transparent 3px),
+        radial-gradient(circle at 70% 60%, rgba(255,120,0,0.7) 2px, transparent 3px),
+        radial-gradient(circle at 40% 80%, rgba(255,80,0,0.6) 2px, transparent 3px);
+
+    animation: sparksFloat 1s infinite linear;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+@keyframes sparksFloat {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-15px);
+    }
+}
+
+
+/* ---------- Utility ---------- */
 .hidden {
     display: none;
+    
 }
-
 .instructions {
-    margin-top: 20px;
+    position: static;
+    margin-top: 0px; /* espaço abaixo do container */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px;
     text-align: center;
 }
 
-#restart-button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    background-color: #535353;
-    color: white;
+.instruction-text {
+    font-size: clamp(13px, 3.2vw, 14px);
+    font-weight: 400;
+    font-family: 'Londrina Solid', 'Arial Black', sans-serif;
+    color: #fbf4d5;
+    letter-spacing: 2px;
+}
+.controls{
+    width: 100%;
+    height: 80px;
+    display: flex;              /* 🔥 ESSENCIAL */
+    justify-content: center;    /* horizontal */
+    align-items: center;        /* vertical */
+    gap: 10px;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 0 20px rgba(255, 115, 0, 0.08);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+}
+
+#player-name{
+    padding: clamp(8px, 2vw, 10px);
     border: none;
-    border-radius: 4px;
+    border-radius: 9px;
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(18px, 4vw, 14px);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: #d6c29e;
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 0 20px rgba(255, 115, 0, 0.08);
+        border-radius: 10px;
+}
+
+#player-name::-webkit-input-placeholder {
+    color: #a2210a;
+}
+
+#player-name:focus {
+    outline: none;       /* remove a borda azul */
+    box-shadow: none;    /* remove brilho padrão */
+}
+
+#restart-button {
+    padding: clamp(8px, 2vw, 10px);
+    border: none;
+    border-radius: 9px;
     cursor: pointer;
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(18px, 4vw, 20px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a120b;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.35),
+        0 0 18px rgba(249, 115, 22, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-#restart-button:hover {
-    background-color: #333;
+/* interação mais responsiva estilo jogo */
+#restart-button:active {
+    transform: translateY(3px) scale(0.98); 
+    box-shadow:
+        0 6px 12px rgba(0,0,0,0.3),
+        0 0 10px rgba(249, 115, 22, 0.25);
 }
 
-.jumping {
-    animation: jump 0.7s linear;
+#ranking {
+  position: absolute;
+  right: 20px;
+  background: rgba(54, 19, 19, 0.6);
+  opacity: 2;
+  color: white;
+  font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 100;
+  padding: 10px;
+  border-radius: 10px;
 }
 
+
+/* ---------- Jump ---------- */
 @keyframes jump {
-    0% {
-        bottom: 20px;
+    0% { bottom: 5.71%; }
+    50% { bottom: 56%; }
+    100% { bottom: 5.71%; }
+}
+
+
+footer {
+    position:fixed;
+    bottom: 0px;
+    margin-top: 16px;
+    font-family: Arial;
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 100;
+    color: #ffe4b6;
+    text-align: center;
+    padding: 8px 0;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+
+    #cactus {
+        width: 6%;
+        height: 10%;
     }
-    50% {
-        bottom: 180px;  /* Aumentado de 120px para 180px para um pulo mais alto */
+
+    #score,
+    #high-score {
+        font-size: 14px;
     }
-    100% {
-        bottom: 20px;
+
+    #game-over {
+        font-size: 28px;
     }
+
+    #restart-button {
+        font-size: 14px;
+        min-width: 100px;
+    }
+}
+
+
+
+
+
+/* 📱 mobile */
+@media (max-width: 768px) {
+  #ranking {
+    position: static;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+/* ---------- Ad Overlay ---------- */
+.ad-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.ad-overlay.hidden {
+    display: none;
+}
+
+.ad-box {
+    position: relative;
+    max-width: min(92vw, 960px);
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.ad-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+}
+
+.ad-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(20, 20, 20, 0.85);
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.15s ease;
+    z-index: 10000;
+}
+
+.ad-close:hover {
+    background: rgba(255, 80, 30, 0.9);
+    transform: scale(1.1);
+}
+
+/* ---------- Botão PULAR ---------- */
+#jump-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+#jump-area.hidden {
+    display: none;
+}
+
+#jump-button {
+    padding: clamp(12px, 3vw, 16px) clamp(32px, 8vw, 64px);
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-family: 'Londrina Solid', cursive;
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1a120b;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.35),
+        0 0 18px rgba(249, 115, 22, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#jump-button:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow:
+        0 6px 12px rgba(0,0,0,0.3),
+        0 0 10px rgba(249, 115, 22, 0.25);
 }
