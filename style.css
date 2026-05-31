@@ -639,21 +639,51 @@ footer {
     #high-score {
         top: 5px !important;
         left: auto !important;
-        right: 90px !important; /* ao lado do score */
+        right: 90px !important;
+        font-size: 10px !important;
     }
 
     #score {
         top: 5px !important;
         right: 5px !important;
+        font-size: 14px !important;
     }
 
     #ranking {
         bottom: 5px !important;
         right: 5px !important;
         padding: 4px !important;
+        font-size: 9px !important;
     }
 
-    .instructions { display: none !important; } /* Ocultar instruções em jogo landscape para caber */
+    .instructions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+        padding: 5px !important;
+        margin-top: 5px !important;
+    }
+
+    .controls { 
+        height: 35px !important;
+        gap: 5px !important;
+        background: none !important;
+        box-shadow: none !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    #player-name {
+        width: 120px !important;
+        font-size: 12px !important;
+        padding: 4px !important;
+    }
+
+    #restart-button {
+        padding: 4px 12px !important;
+        font-size: 14px !important;
+    }
 
     #jump-area {
         position: absolute !important;
