@@ -657,11 +657,11 @@ footer {
     }
 
     .instructions {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 2px !important;
-        padding: 5px !important;
-        margin-top: 5px !important;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 5px;
+        margin-top: 5px;
     }
 
     .controls { 
@@ -686,10 +686,10 @@ footer {
     }
 
     #jump-area {
-        position: absolute !important;
-        right: 20px !important;
-        bottom: 50px !important;
-        z-index: 300 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 5px;
     }
 
     #jump-button {
@@ -699,3 +699,4 @@ footer {
 
     footer { display: none !important; }
 }
+
