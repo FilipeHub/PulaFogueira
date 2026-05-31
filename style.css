@@ -444,42 +444,8 @@ footer {
     padding: 8px 0;
 }
 
-/* ---------- Mobile ---------- */
-@media (max-width: 480px) {
 
-    #cactus {
-        width: 6%;
-        height: 10%;
-    }
-
-    #score,
-    #high-score {
-        font-size: 14px;
-    }
-
-    #game-over {
-        font-size: 28px;
-    }
-
-    #restart-button {
-        font-size: 14px;
-        min-width: 100px;
-    }
-}
-
-
-
-
-
-/* 📱 mobile */
-@media (max-width: 768px) {
-  #ranking {
-    position: static;
-    margin-top: 20px;
-    width: 100%;
-    text-align: center;
-  }
-}
+/* MOBILE & RESPONSIVE FIXES (CONSOLIDATED) */
 
 
 /* ---------- Ad Overlay ---------- */
@@ -578,70 +544,128 @@ footer {
         0 0 10px rgba(249, 115, 22, 0.25);
 }
 
-/* ---------- Landscape Mobile ---------- */
-@media (orientation: landscape) and (max-height: 500px) {
 
-    body {
-        justify-content: flex-start;
-        overflow-y: auto;
-        padding: 4px 8px env(safe-area-inset-bottom, 8px);
-        gap: 4px;
+/* ---------------------------------------------------------
+   📱 MOBILE OVERRIDES (Portrait & General Smartphone)
+   --------------------------------------------------------- */
+@media (max-width: 768px) {
+    .game-container #high-score {
+        top: 5px !important;
+        left: 5px !important;
+        right: auto !important;
+        transform: none !important;
+        font-size: 11px !important;
+        width: auto !important;
+        max-width: 150px !important;
+        padding: 4px 8px !important;
+        text-align: left !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        z-index: 100 !important;
     }
 
-    /* Header compacto: logo + título numa linha, subtítulo some */
+    .game-container #score {
+        top: 5px !important;
+        right: 5px !important;
+        left: auto !important;
+        transform: none !important;
+        font-size: 20px !important;
+        padding: 4px 10px !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        z-index: 100 !important;
+    }
+
+    .game-container #ranking {
+        bottom: 5px !important;
+        right: 5px !important;
+        top: auto !important;
+        left: auto !important;
+        font-size: 10px !important;
+        padding: 6px !important;
+        max-width: 120px !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        z-index: 90 !important;
+        text-align: left !important;
+    }
+
+    #game-over {
+        font-size: 28px !important;
+        top: 45% !important;
+    }
+
     .game-header {
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        margin: 2px 0;
+        margin-bottom: 5px !important;
+    }
+    
+    .game-title {
+        font-size: clamp(32px, 8vw, 48px) !important;
+    }
+}
+
+/* ---------------------------------------------------------
+   🌅 LANDSCAPE MOBILE FIXES
+   --------------------------------------------------------- */
+@media (orientation: landscape) and (max-height: 500px) {
+    body {
+        justify-content: center !important;
+        padding: 2px !important;
+        gap: 0 !important;
     }
 
-    .game-subtitle { display: none; }
+    .game-header {
+        position: absolute !important;
+        top: 5px !important;
+        left: 5px !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        margin: 0 !important;
+        z-index: 200 !important;
+        background: rgba(0,0,0,0.4) !important;
+        padding: 3px 8px !important;
+        border-radius: 8px !important;
+    }
 
-    .game-logo { width: clamp(28px, 5vh, 40px); }
+    .game-subtitle { display: none !important; }
+    .game-logo { width: 25px !important; }
+    .game-title { font-size: 16px !important; }
 
-    .game-title { font-size: clamp(20px, 5vh, 32px); }
-
-    /*
-     * Container limitado pela altura disponível.
-     * O browser usa aspect-ratio para calcular a largura automaticamente,
-     * mantendo as proporções do jogo intactas.
-     */
     .game-container {
-        width: auto;
-        max-height: 46vh;
-        aspect-ratio: 800 / 350;
-        max-width: 100%;
+        width: 85vw !important;
+        height: auto !important;
+        max-height: 220px !important;
+        aspect-ratio: 800 / 350 !important;
+        margin: 0 auto !important;
     }
 
-    /* Controles mais compactos */
-    .instructions {
-        gap: 4px;
-        padding: 4px 8px;
-        margin-top: 2px;
+    #high-score {
+        top: 5px !important;
+        left: auto !important;
+        right: 90px !important; /* ao lado do score */
     }
 
-    .controls { height: 52px; }
-
-    #restart-button,
-    #player-name {
-        font-size: clamp(14px, 3vh, 18px);
-        padding: 6px 12px;
+    #score {
+        top: 5px !important;
+        right: 5px !important;
     }
 
-    #jump-area { margin-top: 4px; }
+    #ranking {
+        bottom: 5px !important;
+        right: 5px !important;
+        padding: 4px !important;
+    }
+
+    .instructions { display: none !important; } /* Ocultar instruções em jogo landscape para caber */
+
+    #jump-area {
+        position: absolute !important;
+        right: 20px !important;
+        bottom: 50px !important;
+        z-index: 300 !important;
+    }
 
     #jump-button {
-        font-size: clamp(16px, 3.5vh, 20px);
-        padding: 8px clamp(20px, 5vw, 40px);
+        font-size: 20px !important;
+        padding: 10px 40px !important;
     }
 
-    /* Footer fixo atrapalha em landscape */
-    footer {
-        position: static;
-        padding: 2px 0;
-        font-size: 9px;
-    }
-
-    #ranking { margin-top: 4px; }
+    footer { display: none !important; }
 }

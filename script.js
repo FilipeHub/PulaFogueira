@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         if (isAdVisible) return;
         startGame();
-    });
+    }); v
 
     jumpButton.addEventListener('click', (e) => {
         e.stopPropagation();
